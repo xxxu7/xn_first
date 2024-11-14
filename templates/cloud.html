@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+
+<head>
+    <title>时疫观澜-疫情评论词云图</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/style.css" media="screen">
+    <link rel="icon" href="../static/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../static/images/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../static/css/search.css">
+    <link rel="stylesheet" href="../static/plugins/bootstrap/css/bootstrap.min.css">
+    <script src="../static/js/echarts.min.js"></script>
+    <script src="../static/js/echarts.js"></script>
+    <script src="../static/js/jquery-1.7.2.min.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+		<script src="assets/script/html5shiv.min.js"></script>
+		<script src="assets/script/respond.min.js"></script>
+	<![endif]-->
+    <!--
+	================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="assets/scripts/jquery.min.js"></script>
+    <script src="assets/scripts/modernizr.min.js"></script>
+    <script src="assets/plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/plugin/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="assets/plugin/nprogress/nprogress.js"></script>
+    <script src="assets/plugin/sweet-alert/sweetalert.min.js"></script>
+    <script src="assets/plugin/waves/waves.min.js"></script>
+
+    <!-- Morris Chart -->
+    <script src="assets/plugin/chart/morris/morris.min.js"></script>
+    <script src="assets/plugin/chart/morris/raphael-min.js"></script>
+    <script src="assets/scripts/chart.morris.init.min.js"></script>
+
+    <!-- Flot Chart -->
+    <script src="assets/plugin/chart/plot/jquery.flot.min.js"></script>
+    <script src="assets/plugin/chart/plot/jquery.flot.tooltip.min.js"></script>
+    <script src="assets/plugin/chart/plot/jquery.flot.categories.min.js"></script>
+    <script src="assets/plugin/chart/plot/jquery.flot.pie.min.js"></script>
+    <script src="assets/plugin/chart/plot/jquery.flot.stack.min.js"></script>
+    <script src="assets/scripts/chart.flot.init.min.js"></script>
+
+    <!-- Sparkline Chart -->
+    <script src="assets/plugin/chart/sparkline/jquery.sparkline.min.js"></script>
+    <script src="assets/scripts/chart.sparkline.init.min.js"></script>
+
+    <!-- FullCalendar -->
+    <script src="assets/plugin/moment/moment.js"></script>
+    <script src="assets/plugin/fullcalendar/fullcalendar.min.js"></script>
+    <script src="assets/scripts/fullcalendar.init.js"></script>
+
+    <script src="assets/scripts/main.min.js"></script>
+    <script src="assets/scripts/horizontal-menu.min.js"></script>
+    <!--[if lt IE 9]>
+		<script src="../static/js/html5.js"></script>
+		<link rel="stylesheet" href="../static/css/ie.css">
+
+	<![endif]-->
+    <!-- Main Styles -->
+    <style>
+        .circle-container {
+            display: flex;
+            justify-content: space-between;
+            /* 水平等距排列 */
+            align-items: center;
+            /* 垂直居中对齐 */
+            margin-bottom: 20px;
+            /* 底部间距 */
+        }
+
+        .circle {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2196F3 0%, #3F51B5 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .circle:nth-child(2) {
+            background: linear-gradient(135deg, #2196F3 0%, #3F51B5 50%, #03A9F4 100%);
+        }
+
+        .circle:nth-child(3) {
+            background: linear-gradient(135deg, #2196F3 0%, #3F51B5 33.33%, #03A9F4 66.67%, #00BCD4 100%);
+        }
+    </style>
+    <style>
+        #max {
+            width: 300px;
+            height: 300px;
+            margin: 5% auto 0;
+            /* 使用 auto 将其水平居中 */
+            position: relative;
+        }
+
+        .re {
+            height: 250px;
+            position: relative;
+        }
+
+        .re ul {
+            list-style-type: none;
+            padding: 0;
+            /* 清除 ul 的内边距 */
+            margin: 0;
+            /* 清除 ul 的外边距 */
+        }
+
+        .re ul>li {
+            width: 300px;
+            height: 250px;
+            position: absolute;
+            transition: 1s;
+            opacity: 0;
+        }
+
+        .re ul>li img {
+            width: 300px;
+            height: 250px;
+            border-radius: 10%;
+            border: 5px solid #d6ddff;
+        }
+
+        #max ol {
+            position: absolute;
+            bottom: 10px;
+            /* 调整小圆点距离底部的位置 */
+            left: 50%;
+            /* 将其左侧移动到父容器中间 */
+            transform: translateX(-50%);
+            /* 通过负的50%的 translate 实现水平居中 */
+            display: flex;
+            /* 使用 flexbox 使其内部元素水平排列 */
+            justify-content: center;
+            /* 水平居中其内部元素 */
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #max ol li {
+            width: 10px;
+            height: 10px;
+            font-size: 15px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 2em;
+            border: 2px solid #e7e7e7;
+            background-color: #fff;
+            cursor: pointer;
+            margin: 0 5px;
+            /* 调整小圆点之间的间距 */
+        }
+
+        .word-item {
+            display: inline-block;
+            /* 横向排列 */
+            margin-right: 10px;
+            /* 词语之间的间距 */
+            position: relative;
+            /* 用于绝对定位小圆点 */
+            padding-left: 20px;
+            /* 为小圆点留出空间 */
+            font-size: 16px;
+            /* 字体大小 */
+        }
+
+        .word-item::before {
+            content: '';
+            /* 小圆点的内容 */
+            display: inline-block;
+            /* 使其成为行内块级元素 */
+            width: 8px;
+            /* 小圆点的宽度 */
+            height: 8px;
+            /* 小圆点的高度 */
+            border-radius: 50%;
+            /* 圆形 */
+            position: absolute;
+            /* 绝对定位 */
+            left: 0;
+            /* 小圆点位置 */
+            top: 50%;
+            /* 小圆点位置 */
+            transform: translateY(-50%);
+            /* 垂直居中 */
+            background-color: #a1cded;
+            /* 小圆点颜色 */
+        }
+
+
+        #container span {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        #fetchButton {
+            background-color: #0e90d2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+
+        #fetchButton:hover {
+            background-color: #1d79b5;
+            /* 鼠标悬停时背景颜色加深，可选 */
+        }
+
+        #monthSelector {
+            margin-top: 70px;
+            margin-left: 20px;
+            font-size: 14px;
+            width: 80px;
+            /* 根据需要调整宽度 */
+            padding: 5px;
+            /* 可选：增加内边距使选项更易读 */
+            border: 1px solid #ccc;
+            /* 可选：添加边框 */
+            border-radius: 4px;
+            /* 可选：添加圆角 */
+        }
+
+        /* 也可以使用CSS渐变来实现颜色由深到浅的效果 */
+        .word-item {
+            background-image: linear-gradient(#333, #913333);
+            color: #0e90d2;
+            -webkit-background-clip: text;
+            /* 文字背景裁剪 */
+            background-clip: text;
+        }
+
+        #max ol li.active {
+            background-color: #333;
+        }
+
+        #imageContainer img {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        .animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/styles/style-horizontal.min.css') }}">
+
+    <!-- Material Design Icon -->
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='assets/fonts/material-design/css/materialdesignicons.css') }}">
+
+    <!-- mCustomScrollbar -->
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='assets/plugin/mCustomScrollbar/jquery.mCustomScrollbar.min.css') }}">
+
+    <!-- Waves Effect -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugin/waves/waves.min.css') }}">
+
+    <!-- Sweet Alert -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugin/sweet-alert/sweetalert.css') }}">
+
+    <!-- Morris Chart -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugin/chart/morris/morris.css') }}">
+
+    <!-- FullCalendar -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugin/fullcalendar/fullcalendar.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugin/fullcalendar/fullcalendar.print.css') }}"
+        media='print'>
+
+
+</head>
+
+<body>
+    <header class="fixed-header">
+        <div class="header-top">
+            <div class="container">
+                <div class="pull-left">
+                    <a href="index.html" class="logo"><i class="ico mdi mdi-cube-outline"></i>时疫观澜</a>
+                </div>
+            </div>
+            <!-- /.container -->
+        </div>
+        <!-- /.header-top -->
+        <nav class="nav-horizontal">
+            <button type="button" class="menu-close hidden-on-desktop js__close_menu"><i
+                    class="fa fa-times"></i><span>CLOSE</span></button>
+            <div class="container">
+
+                <ul class="menu">
+
+
+					<li class="has-sub">
+						<a href="cline"><i class="ico mdi mdi-chart-bar"></i><span>中国疫情趋势图</span></a>
+					</li>
+<li class="has-sub">
+                        <a href="activebar"><i class="ico mdi mdi-chart-bar"></i><span>世界疫情条形图</span></a>
+                    </li>
+					<li class="has-sub">
+						<a href="cbar"><i class="ico mdi mdi-chart-bar"></i><span>世界疫情玫瑰图</span></a>
+					</li>
+
+					<li class="has-sub">
+                        <a href="model"><i class="ico mdi mdi-creation"></i><span>评论情感分类模型</span></a>
+                    </li>
+
+                    <li class="has-sub">
+                        <a href="change"><i class="ico mdi mdi-chart-bar"></i><span>评论情感分类图</span></a>
+                    </li>
+
+                    <li class="current">
+                        <a href="cloud"><i class="ico mdi mdi-chart-bar"></i><span>疫情评论词云图</span></a>
+                    </li>
+                </ul>
+                <!-- /.menu -->
+            </div>
+            <!-- /.container -->
+        </nav>
+        <!-- /.nav-horizontal -->
+    </header>
+    <!-- /.fixed-header -->
+
+    <div id="wrapper">
+        <div class="main-content container">
+            <div class="row small-spacing">
+                <div class="col-xs-12">
+                    <div class="box-content" style="height: 550px">
+                        <div class="container">
+                            <span
+                                style="margin-left: 450px;font-size: 20px;font-weight: bold;margin-top: 5px">疫情评论词云图</span><br>
+                            <div style="margin-top: -60px;margin-left: 420px;font-weight: bold;font-size: 16px">月份
+                                <select id="monthSelector">
+                                    <option value="all">全部</option>
+                                    <option value="1">1月</option>
+                                    <option value="2">2月</option>
+                                    <option value="3">3月</option>
+                                    <option value="4">4月</option>
+                                    <option value="5">5月</option>
+                                    <option value="6">6月</option>
+                                </select>
+                                <button id="fetchButton">确定</button>
+                            </div>
+                        </div>
+                        <div id="imageContainer" style="text-align: center; margin-top: 0px;"></div>
+                        <div id="wordContainer"
+                            style="width: 700px; overflow: auto; margin-top: 20px; margin-left: 210px;"></div>
+                    </div>
+                    <!-- /.box-content -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    </div>
+    <!-- /.main-content -->
+    </div><!--/#wrapper -->
+    <script>
+        document.getElementById('fetchButton').addEventListener('click', function () {
+            const month = document.getElementById('monthSelector').value;
+            displayWordsAndImage(month);
+        });
+
+        function displayWordsAndImage(month) {
+            const imageContainer = document.getElementById('imageContainer');
+            const wordContainer = document.getElementById('wordContainer');
+            imageContainer.innerHTML = ''; // 清空之前的图片
+            wordContainer.innerHTML = ''; // 清空之前的词频
+
+            // 根据月份选择图片和高频词
+            let imageUrl = '';
+            let高频词 = [];
+            switch (month) {
+                case 'all':
+                    imageUrl = '../static/images/cloud.png'; // 替换为全部的图片URL
+                    高频词 = [
+                        { word: '武汉', count: 7030 },
+                        { word: '加油', count: 6830 },
+                        { word: '疫情', count: 3964 },
+                        { word: '肺炎', count: 3526 },
+                        { word: '致敬', count: 3452 },
+                        { word: '医护人员', count: 3200 },
+                        { word: '新型', count: 3114 },
+                        { word: '大家', count: 2718 },
+                        { word: '平安', count: 2418 },
+                        { word: '一起', count: 2280 },
+                        { word: '口罩', count: 2240 },
+                        { word: '前线', count: 1852 },
+                        { word: '冠状病毒', count: 1630 },
+                        { word: '确诊', count: 1580 },
+                        { word: '你们', count: 1518 }
+                    ];
+                    break;
+                case '1':
+                    imageUrl = '../static/images/cloud1.png'; // 替换为1月的图片URL
+                    高频词 = [
+                        { word: '武汉', count: 1141 },
+                        { word: '加油', count: 1078 },
+                        { word: '疫情', count: 684 },
+                        { word: '肺炎', count: 625 },
+                        { word: '致敬', count: 550 },
+                        { word: '新型', count: 537 },
+                        { word: '医护人员', count: 505 },
+                        { word: '大家', count: 485 },
+                        { word: '平安', count: 429 },
+                        { word: '一起', count: 376 },
+                        { word: '口罩', count: 363 },
+                        { word: '前线', count: 297 },
+                        { word: '冠状病毒', count: 275 },
+                        { word: '确诊', count: 270 },
+                        { word: '你们', count: 266 }
+                    ];
+                    break;
+                case '2':
+                    imageUrl = '../static/images/cloud2.png'; // 替换为1月的图片URL
+                    高频词 = [
+                        { word: '加油', count: 1202 },
+                        { word: '武汉', count: 1196 },
+                        { word: '疫情', count: 704 },
+                        { word: '致敬', count: 655 },
+                        { word: '医护人员', count: 598 },
+                        { word: '肺炎', count: 558 },
+                        { word: '新型', count: 507 },
+                        { word: '大家', count: 460 },
+                        { word: '一起', count: 421 },
+                        { word: '平安', count: 388 },
+                        { word: '前线', count: 348 },
+                        { word: '口罩', count: 338 },
+                        { word: '你们', count: 281 },
+                        { word: '冠状病毒', count: 274 },
+                        { word: '确诊', count: 265 }
+                    ];
+                    break;
+                case '3':
+                    imageUrl = '../static/images/cloud3.png'; // 替换为1月的图片URL
+                    高频词 = [
+                        { word: '加油', count: 1151 },
+                        { word: '武汉', count: 1139 },
+                        { word: '疫情', count: 650 },
+                        { word: '致敬', count: 613 },
+                        { word: '医护人员', count: 558 },
+                        { word: '肺炎', count: 538 },
+                        { word: '新型', count: 495 },
+                        { word: '大家', count: 467 },
+                        { word: '平安', count: 418 },
+                        { word: '口罩', count: 396 },
+                        { word: '一起', count: 360 },
+                        { word: '前线', count: 321 },
+                        { word: '你们', count: 264 },
+                        { word: '冠状病毒', count: 254 },
+                        { word: '确诊', count: 240 }
+                    ];
+                    break;
+                case '4':
+                    imageUrl = '../static/images/cloud4.png'; // 替换为1月的图片URL
+                    高频词 = [
+                        { word: '武汉', count: 1197 },
+                        { word: '加油', count: 1108 },
+                        { word: '肺炎', count: 618 },
+                        { word: '疫情', count: 605 },
+                        { word: '新型', count: 560 },
+                        { word: '致敬', count: 504 },
+                        { word: '医护人员', count: 464 },
+                        { word: '大家', count: 441 },
+                        { word: '平安', count: 402 },
+                        { word: '一起', count: 378 },
+                        { word: '口罩', count: 342 },
+                        { word: '冠状病毒', count: 305 },
+                        { word: '前线', count: 280 },
+                        { word: '确诊', count: 278 },
+                        { word: '真的', count: 246 }
+                    ];
+                    break;
+                case '5':
+                    imageUrl = '../static/images/cloud5.png'; // 替换为1月的图片URL
+                    高频词 = [
+                        { word: '武汉', count: 1166 },
+                        { word: '加油', count: 1139 },
+                        { word: '疫情', count: 646 },
+                        { word: '肺炎', count: 620 },
+                        { word: '致敬', count: 566 },
+                        { word: '新型', count: 537 },
+                        { word: '医护人员', count: 536 },
+                        { word: '大家', count: 436 },
+                        { word: '平安', count: 424 },
+                        { word: '口罩', count: 382 },
+                        { word: '一起', count: 339 },
+                        { word: '前线', count: 311 },
+                        { word: '病例', count: 283 },
+                        { word: '冠状病毒', count: 280 },
+                        { word: '确诊', count: 264 }
+                    ];
+                    break;
+                case '6':
+                    imageUrl = '../static/images/cloud6.png'; // 替换为1月的图片URL
+                    高频词 = [
+                        { word: '武汉', count: 1191 },
+                        { word: '加油', count: 1152 },
+                        { word: '疫情', count: 675 },
+                        { word: '肺炎', count: 567 },
+                        { word: '致敬', count: 564 },
+                        { word: '医护人员', count: 539 },
+                        { word: '新型', count: 478 },
+                        { word: '大家', count: 429 },
+                        { word: '口罩', count: 419 },
+                        { word: '一起', count: 406 },
+                        { word: '平安', count: 376 },
+                        { word: '确诊', count: 334 }
+                    ];
+                    break;
+                default:
+                    imageUrl = '../static/images/cloud.png'; // 默认图片URL
+                    高频词 = [
+                        { word: '武汉', count: 7030 },
+                        { word: '加油', count: 6830 },
+                        { word: '疫情', count: 3964 },
+                        { word: '肺炎', count: 3526 },
+                        { word: '致敬', count: 3452 },
+                        { word: '医护人员', count: 3200 },
+                        { word: '新型', count: 3114 },
+                        { word: '大家', count: 2718 },
+                        { word: '平安', count: 2418 },
+                        { word: '一起', count: 2280 },
+                        { word: '口罩', count: 2240 },
+                        { word: '前线', count: 1852 },
+                        { word: '冠状病毒', count: 1630 },
+                        { word: '确诊', count: 1580 },
+                        { word: '你们', count: 1518 }
+                    ];
+                    break;
+            }
+
+            // 显示图片
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.style.width = '60%';
+            img.style.height = '60%';
+            imageContainer.appendChild(img);
+
+            // 应用图片动画效果
+            img.style.opacity = '0';
+            img.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                img.style.opacity = '1';
+                img.style.transform = 'translateY(0)';
+                img.style.transition = 'opacity 1s ease-out, transform 1s ease-out';
+            }, 0);
+
+            // 显示高频词
+            const topN = 12; // 显示前15个高频词
+
+            wordContainer.innerHTML = ''; // 清空之前的词频
+
+            for (let i = 0; i < Math.min(topN, 高频词.length); i++) {
+                const wordInfo = 高频词[i];
+                const wordElement = document.createElement('div');
+                wordElement.className = 'word-item'; // 给元素添加类名
+                wordElement.style.order = topN - i; // 设置顺序，使颜色由深到浅
+                wordElement.textContent = `${wordInfo.word}: ${wordInfo.count}`;
+                wordContainer.appendChild(wordElement);
+            }
+        }
+        window.onload = function () {
+            document.getElementById('fetchButton').click();
+        };
+    </script>
+</body>

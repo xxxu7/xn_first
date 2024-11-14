@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="../static/css/style.css" media="screen">
+    <link rel="icon" href="../static/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../static/images/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../static/css/search.css">
+    <link rel="stylesheet" href="../static/plugins/bootstrap/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+		<script src="assets/script/html5shiv.min.js"></script>
+		<script src="assets/script/respond.min.js"></script>
+	<![endif]-->
+    <!--
+	================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="assets/scripts/jquery.min.js"></script>
+    <script src="assets/scripts/modernizr.min.js"></script>
+    <script src="assets/plugin/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/plugin/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="assets/plugin/nprogress/nprogress.js"></script>
+    <script src="assets/plugin/sweet-alert/sweetalert.min.js"></script>
+    <script src="assets/plugin/waves/waves.min.js"></script>
+
+    <script src="../static/js/echarts.min.js"></script>
+    <!-- Form Wizard -->
+    <script src="assets/plugin/form-wizard/prettify.js"></script>
+    <script src="assets/plugin/form-wizard/jquery.bootstrap.wizard.min.js"></script>
+    <script src="assets/plugin/jquery-validation/jquery.validate.min.js"></script>
+    <script src="assets/scripts/form.wizard.init.min.js"></script>
+
+    <script src="assets/scripts/main.min.js"></script>
+    <script src="assets/scripts/horizontal-menu.min.js"></script>
+
+    <title>时疫观澜-评论情感分类模型</title>
+
+    <!-- Main Styles -->
+    <style>
+        .circle-container {
+            display: flex;
+            justify-content: space-between;
+            /* 水平等距排列 */
+            align-items: center;
+            /* 垂直居中对齐 */
+            margin-bottom: 20px;
+            /* 底部间距 */
+        }
+
+        #modelSelector {
+            margin-left: 50px;
+            font-size: 14px;
+            width: 150px;
+            /* 根据需要调整宽度 */
+            padding: 5px;
+            /* 可选：增加内边距使选项更易读 */
+            border: 1px solid #ccc;
+            /* 可选：添加边框 */
+            border-radius: 4px;
+            /* 可选：添加圆角 */
+        }
+
+        .circle {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2196F3 0%, #3F51B5 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .circle:nth-child(2) {
+            background: linear-gradient(135deg, #2196F3 0%, #3F51B5 50%, #03A9F4 100%);
+        }
+
+        .circle:nth-child(3) {
+            background: linear-gradient(135deg, #2196F3 0%, #3F51B5 33.33%, #03A9F4 66.67%, #00BCD4 100%);
+        }
+    </style>
+    <style>
+        #max {
+            width: 300px;
+            height: 300px;
+            margin: 5% auto 0;
+            /* 使用 auto 将其水平居中 */
+            position: relative;
+        }
+
+        .re {
+            height: 250px;
+            position: relative;
+        }
+
+        .re ul {
+            list-style-type: none;
+            padding: 0;
+            /* 清除 ul 的内边距 */
+            margin: 0;
+            /* 清除 ul 的外边距 */
+        }
+
+        .re ul>li {
+            width: 300px;
+            height: 250px;
+            position: absolute;
+            transition: 1s;
+            opacity: 0;
+        }
+
+        .re ul>li img {
+            width: 300px;
+            height: 250px;
+            border-radius: 10%;
+            border: 5px solid #d6ddff;
+        }
+
+        #max ol {
+            position: absolute;
+            bottom: 10px;
+            /* 调整小圆点距离底部的位置 */
+            left: 50%;
+            /* 将其左侧移动到父容器中间 */
+            transform: translateX(-50%);
+            /* 通过负的50%的 translate 实现水平居中 */
+            display: flex;
+            /* 使用 flexbox 使其内部元素水平排列 */
+            justify-content: center;
+            /* 水平居中其内部元素 */
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #max ol li {
+            width: 10px;
+            height: 10px;
+            font-size: 15px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 2em;
+            border: 2px solid #e7e7e7;
+            background-color: #fff;
+            cursor: pointer;
+            margin: 0 5px;
+            /* 调整小圆点之间的间距 */
+        }
+
+        #max ol li.active {
+            background-color: #333;
+        }
+
+
+        #container span {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        #fetchButton {
+            background-color: #0e90d2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+
+        #fetchButton:hover {
+            background-color: #1d79b5;
+            /* 鼠标悬停时背景颜色加深，可选 */
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/styles/style-horizontal.min.css') }}">
+
+    <!-- Material Design Icon -->
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='assets/fonts/material-design/css/materialdesignicons.css') }}">
+
+    <!-- mCustomScrollbar -->
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='assets/plugin/mCustomScrollbar/jquery.mCustomScrollbar.min.css') }}">
+
+    <!-- Waves Effect -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugin/waves/waves.min.css') }}">
+
+    <!-- Sweet Alert -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugin/sweet-alert/sweetalert.css') }}">
+
+    <!-- Morris Chart -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugin/chart/morris/morris.css') }}">
+
+    <!-- FullCalendar -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugin/fullcalendar/fullcalendar.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugin/fullcalendar/fullcalendar.print.css') }}"
+        media='print'>
+
+</head>
+
+<body>
+    <header class="fixed-header">
+        <div class="header-top">
+            <div class="container">
+                <div class="pull-left">
+                    <a href="index.html" class="logo"><i class="ico mdi mdi-cube-outline"></i>时疫观澜</a>
+                </div>
+            </div>
+            <!-- /.container -->
+        </div>
+        <!-- /.header-top -->
+        <nav class="nav-horizontal">
+            <button type="button" class="menu-close hidden-on-desktop js__close_menu"><i
+                    class="fa fa-times"></i><span>CLOSE</span></button>
+            <div class="container">
+
+                <ul class="menu">
+
+
+                    <li class="has-sub">
+                        <a href="cline"><i class="ico mdi mdi-chart-bar"></i><span>中国疫情趋势图</span></a>
+                    </li>
+                    <li class="has-sub">
+                        <a href="activebar"><i class="ico mdi mdi-chart-bar"></i><span>世界疫情条形图</span></a>
+                    </li>
+                    <li class="has-sub">
+                        <a href="cbar"><i class="ico mdi mdi-chart-bar"></i><span>世界疫情玫瑰图</span></a>
+                    </li>
+
+                    <li class="current">
+                        <a href="model"><i class="ico mdi mdi-creation"></i><span>评论情感分类模型</span></a>
+                    </li>
+
+                    <li class="has-sub">
+                        <a href="change"><i class="ico mdi mdi-chart-bar"></i><span>评论情感分类图</span></a>
+                    </li>
+
+                    <li class="has-sub">
+                        <a href="cloud"><i class="ico mdi mdi-chart-bar"></i><span>疫情评论词云图</span></a>
+                    </li>
+                </ul>
+                <!-- /.menu -->
+            </div>
+            <!-- /.container -->
+        </nav>
+        <!-- /.nav-horizontal -->
+    </header>
+    <div id="wrapper">
+        <div class="main-content container">
+            <div class="row small-spacing">
+                <div class="col-xs-12">
+                    <div class="box-content">
+                        <h3 style="margin-top:-5px">评论情感分类模型</h3>
+                        <h4 style="text-indent:4ch">
+                            随着COVID-19疫情的全球蔓延，社交媒体上关于疫情的讨论和评论呈爆炸式增长。这些数据蕴含着丰富的情感和观点，对于理解公众情绪、预测疫情趋势以及评估政策效果具有重要意义。本网页将介绍五种疫情评论情感分类模型，分别是Bi-LSTM模型、Bert-CNN模型、BiGRU-Linear模型、Bert—BiGRU模型和Bert—BiGRU-CNN模型。在这些模型中，Bert—BiGRU-CNN模型以其卓越的性能脱颖而出，成为最终疫情评论情感分类模型。
+                        </h4>
+                    </div>
+                    <!-- /.box-content -->
+                </div>
+                <div class="col-xs-12 col-lg-6">
+                    <div class="box-content">
+
+                        <div style="width:600px;height:500px;">
+                            <div style="margin-left: 100px;font-size: 18px;font-weight: bold"><span>模型性能</span>
+                                <select id="modelSelector" style="margin-left:30px">
+                                    <option value="Bi-LSTM">Bi-LSTM</option>
+                                    <option value="BiGRU-Linear">BiGRU-Linear</option>
+                                    <option value="Bert-CNN">Bert-CNN</option>
+                                    <option value="Bert-BiGRU">Bert-BiGRU</option>
+                                    <option value="Bert-BiGRU-CNN">Bert-BiGRU-CNN</option>
+                                </select>
+                                <button id="fetchButton">确定</button>
+                            </div>
+                            <div id="container" style="width:600px;height:400px;margin-left: -30px"></div>
+                        </div>
+                    </div>
+                    <!-- /.box-content -->
+                </div>
+                <div class="col-xs-12 col-lg-6">
+                    <div class="box-content">
+                        <span style="font-size: 18px;font-weight: bold;margin-left: 225px;">模型介绍</span>
+                        <div id="modelDescription"
+                            style="width:530px;overflow:auto;padding:10px;margin-top:5px;font-size: 16px;text-indent:4ch;">
+                        </div>
+                        <div id="jieshao" style="width:530px;height:385px;">
+
+                        </div>
+                    </div>
+                    <!-- /.box-content -->
+                </div>
+                <div class="col-xs-12  col-lg-6">
+                    <div class="box-content">
+                        <div id="container2" style="width:530px;height:500px;">
+
+                        </div>
+                    </div>
+                    <!-- /.box-content -->
+                </div>
+                <div class="col-xs-12 col-lg-6">
+                    <div class="box-content">
+                        <div id="container3" style="width:530px;height:500px;">
+
+                        </div>
+                    </div>
+                    <!-- /.box-content -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var myChart4 = echarts.init(document.getElementById('container'));
+
+        var option = {
+            tooltip: {
+                trigger: 'item', // 触发类型：数据项图形触发
+                formatter: function (params) {
+                    // 格式化 tooltip 显示的内容
+                    return `${params.seriesName}<br/>${params.name}: ${params.value}%`;
+                }
+            },
+            legend: {
+                data: ['精确率 P', '召回率 R', '准确率 Acc', 'F1值 F1'],
+                top: 'bottom',
+                left: 'center',
+                textStyle: {
+                    fontSize: 14
+                }
+            },
+            xAxis: {
+                type: 'category',
+                data: [],
+                axisLabel: {
+                    interval: 0 // 保证所有标签显示
+                }
+            },
+            yAxis: {
+                type: 'value',
+                boundaryGap: [0, 0.01],
+                min: 75,
+                max: 95,
+                axisLabel: {
+                    formatter: '{value} %'
+                }
+            },
+            series: [
+                {
+                    name: '精确率 P',
+                    type: 'bar',
+                    data: [],
+                    barWidth: '20%' // 设置柱子宽度为20%
+                },
+                {
+                    name: '召回率 R',
+                    type: 'bar',
+                    data: [],
+                    barWidth: '20%' // 设置柱子宽度为20%
+                },
+                {
+                    name: '准确率 Acc',
+                    type: 'bar',
+                    data: [],
+                    barWidth: '20%' // 设置柱子宽度为20%
+                },
+                {
+                    name: 'F1值 F1',
+                    type: 'bar',
+                    data: [],
+                    barWidth: '20%' // 设置柱子宽度为20%
+                }
+            ]
+        };
+
+        myChart4.setOption(option);
+
+        document.getElementById('fetchButton').addEventListener('click', function () {
+            const model_name = document.getElementById('modelSelector').value;
+            fetch(`/performance-data?model_name=${model_name}`)
+                .then(response => response.json())
+                .then(data => {
+                    // 分离数据集名称和性能指标数据
+                    const categories = data.map(item => item.dataset_name);
+                    const pValues = data.map(item => item.p);
+                    const rValues = data.map(item => item.r);
+                    const accValues = data.map(item => item.acc);
+                    const f1Values = data.map(item => item.f1);
+
+                    // 更新图表
+                    myChart4.setOption({
+                        xAxis: {
+                            data: categories
+                        },
+                        series: [
+                            {
+                                name: '精确率 P',
+                                data: pValues
+                            },
+                            {
+                                name: '召回率 R',
+                                data: rValues
+                            },
+                            {
+                                name: '准确率 Acc',
+                                data: accValues
+                            },
+                            {
+                                name: 'F1值 F1',
+                                data: f1Values
+                            }
+                        ]
+                    });
+                })
+                .catch(error => console.error('Error fetching data: ', error));
+
+
+            updateImageAndTextDisplay(model_name);
+        });
+        // 页面加载完成后，自动触发“确定”按钮的点击事件
+        window.onload = function () {
+            document.getElementById('fetchButton').click();
+        };
+        // 获取模型图片信息
+        // 获取模型图片信息和介绍
+        function getModelInfo(modelName) {
+            switch (modelName) {
+                case 'Bi-LSTM':
+                    return {
+                        src: '../static/images/Bi-LSTM.png',
+                        width: '400px',
+                        height: '280px',
+                        style: 'display: block; margin-left: auto; margin-right: auto; margin-bottom: 20px;', // 居中并设置下边距
+                        description: 'Bi-LSTM模型是一种双向长短时记忆网络，它通过两个独立的LSTM网络处理文本，一个从左到右，另一个从右到左。这种结构使得模型能够捕获文本的前后文信息。'
+                    };
+                case 'BiGRU-Linear':
+                    return {
+                        src: '../static/images/BiGRU-Linear.png',
+                        width: '400px',
+                        height: '300px',
+                        style: 'display: block; margin-left: auto; margin-right: auto; margin-bottom: 20px;height: 300px;', // 居中并设置下边距
+                        description: 'BiGRU-Linear模型是将双向门控循环单元（BiGRU）与线性层相结合。BiGRU来完成句子信息的抽取，然后通过线性层来对句子进行分类。'
+                    };
+                case 'Bert-CNN':
+                    return {
+                        src: '../static/images/Bert-CNN.png',
+                        width: '300px',
+                        height: '400px',
+                        style: 'display: block; margin-left: auto; margin-right: auto; margin-bottom: 20px;height: 400px;', // 居中并设置下边距
+                        description: 'BERT-CNN模型结合了BERT的上下文理解能力和CNN的空间特征提取能力。BERT用于提取文本的深层语义特征，而CNN用于捕捉局部特征和不同n-gram的组合。'
+                    };
+                case 'Bert-BiGRU':
+                    return {
+                        src: '../static/images/Bert-BiGRU.png',
+                        width: '350px',
+                        height: '350px',
+                        style: 'display: block; margin-left: auto; margin-right: auto; margin-bottom: 20px;height: 400px;', // 居中并设置下边距
+                        description: 'Bert-BiGRU模型结合了BERT的双向编码能力和BiGRU的序列处理能力。Bert-BiGRU模型包含输入层、BERT层、双向GRU层和Softmax输出层。'
+                    };
+                case 'Bert-BiGRU-CNN':
+                    return {
+                        src: '../static/images/Bert-BiGRU-CNN.png',
+                        width: '400px',
+                        height: '400px',
+                        style: 'display: block; margin-left: auto; margin-right: auto; margin-bottom: 20px;height: 400px;', // 居中并设置下边距
+                        description: 'Bert-BiGRU-CNN模型整合了BERT、BiGRU和CNN的优势。BERT用于提取文本的上下文特征，BiGRU用于处理序列数据，CNN用于提取局部特征。'
+                    };
+                default:
+                    return {
+                        src: '../static/images/Bi-LSTM.png',
+                        width: '400px',
+                        height: '280px',
+                        style: 'display: block; margin-left: auto; margin-right: auto; margin-bottom: 20px;', // 居中并设置下边距
+                        description: 'Bi-LSTM模型是一种双向长短时记忆网络，它通过两个独立的LSTM网络处理文本，一个从左到右，另一个从右到左。这种结构使得模型能够捕获文本的前后文信息。'
+                    };
+            }
+        }
+
+        // 更新图片和文本显示
+        function updateImageAndTextDisplay(modelName) {
+            var imageInfo = getModelInfo(modelName);
+            var jieshao = document.getElementById('jieshao');
+            jieshao.innerHTML = ''; // 清空之前的图片
+            var img = document.createElement('img');
+            img.src = imageInfo.src;
+            img.style.width = imageInfo.width;
+            img.style.height = imageInfo.height;
+            img.style.cssText = imageInfo.style; // 应用样式
+            jieshao.appendChild(img);
+
+            // 更新模型介绍文本
+            var modelDescription = document.getElementById('modelDescription');
+            modelDescription.innerHTML = imageInfo.description;
+        }
+    </script>
+    <script>
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('container2'));
+
+        var option = {
+            title: {
+                text: '五大模型性能雷达图',
+                left: 'center', // 标题居中
+                top: 'top', // 标题放置在顶部
+                textStyle: {
+                    fontSize: 19 // 标题字体大小
+                },
+                padding: [10, 0, 10, 0] // 上右下左的内边距，增加底部内边距以增加标题与图表的间距
+            },
+            tooltip: {},
+            legend: {
+                data: ['精确率 P', '召回率 R', '准确率 ACC', 'F1值 F1'],
+                orient: 'horizontal', // 图例水平排列
+                top: 'bottom', // 图例放置在底部
+                left: 'center', // 图例居中
+                textStyle: {
+                    fontSize: 14 // 图例字体大小
+                }
+            },
+            radar: {
+                name: {
+                    textStyle: {
+                        fontSize: 12, // 调整indicator名称的字体大小
+                        color: 'grey',
+                        lineHeight: 18, // 设置行高
+                        ellipsis: true, // 超出部分显示省略号
+                        width: 60, // 限制文本宽度，超出后换行
+                        height: 30, // 设置文本区域高度，足够容纳两行文本
+                        margin: [50, 0, 0, 0] // 上右下左的内边距，增加底部内边距
+                    }
+                },
+                indicator: [
+                    { name: 'Bert-BiGRU-CNN', min: 80, max: 93 },
+                    { name: 'Bert-CNN', min: 80, max: 93 },
+                    { name: 'BiGRU-Linear', min: 80, max: 93 },
+                    { name: 'Bert-BiGRU', min: 80, max: 93 },
+                    { name: 'Bi-LSTM', min: 80, max: 93 },
+                ]
+            },
+            series: [{
+                name: '模型性能对比雷达图',
+                type: 'radar',
+                data: [
+                    {
+                        value: [91.56, 89.67, 84.98, 90.92, 81.45],
+                        name: '精确率 P'
+                    },
+                    {
+                        value: [91.42, 88.70, 85.87, 90.83, 82.04],
+                        name: '召回率 R'
+                    },
+                    {
+                        value: [92.03, 89.52, 85.34, 91.37, 80.86],
+                        name: '准确率 ACC'
+                    },
+                    {
+                        value: [91.49, 89.18, 85.30, 91.11, 81.86],
+                        name: 'F1值 F1'
+                    }
+                ]
+            }]
+        };
+
+        myChart.setOption(option);
+    </script>
+    <script>
+        // 基于准备好的dom，初始化echarts实例
+        var myChart2 = echarts.init(document.getElementById('container3'));
+
+        var option = {
+            title: {
+                text: '五大模型性能柱状图',
+                subtext: '', // 如果需要副标题，可以在这里设置
+                left: 'center', // 标题居中
+                textStyle: {
+                    fontSize: 19 // 标题字体大小
+                }
+            },
+            tooltip: {},
+            legend: {
+                data: ['精确率 P', '召回率 R', '准确率 ACC', 'F1值 F1'],
+                orient: 'horizontal', // 图例水平排列
+                top: 'bottom', // 图例放置在底部
+                left: 'center', // 图例居中
+                textStyle: {
+                    fontSize: 14 // 图例字体大小
+                }
+            },
+            xAxis: {
+                type: 'category',
+                data: ['Bi-LSTM', 'BiGRU-Linear', 'Bert-CNN', 'Bert-BiGRU', 'Bert-BiGRU-CNN'],
+                color: 'grey',
+                axisLabel: {
+                    fontSize: 12, // x轴字体大小
+                    interval: -1 // x轴标签之间的间隔
+                }
+
+            },
+            yAxis: {
+                type: 'value',
+                min: 75,
+                max: 95,
+                axisLabel: {
+                    formatter: '{value} %'
+                }
+            },
+            series: [{
+                name: '精确率 P',
+                type: 'bar',
+                data: [81.45, 84.98, 89.67, 90.92, 91.56],
+                itemStyle: { normal: { label: { show: false } } }
+            }, {
+                name: '召回率 R',
+                type: 'bar',
+                data: [82.04, 85.87, 88.70, 90.83, 91.42],
+                itemStyle: { normal: { label: { show: false } } }
+            }, {
+                name: '准确率 ACC',
+                type: 'bar',
+                data: [80.86, 85.34, 89.52, 91.37, 92.03],
+                itemStyle: { normal: { label: { show: false } } }
+            }, {
+                name: 'F1值 F1',
+                type: 'bar',
+                data: [81.86, 85.30, 89.18, 91.11, 91.49],
+                itemStyle: { normal: { label: { show: false } } }
+            }]
+        };
+
+        myChart2.setOption(option);
+    </script>
+</body>
+
+</html>

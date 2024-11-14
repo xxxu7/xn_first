@@ -1,0 +1,17 @@
+#l {
+	position: absolute;
+	width: 60%;
+	height: 80%;
+	top: 20%;
+	left: 0%;
+}
+
+
+#r {
+	position: absolute;
+	width: 44%;
+	height: 66%;
+	top: 23%;
+	right: 0%;
+	background-color:rgb(0,0,0,0)
+}

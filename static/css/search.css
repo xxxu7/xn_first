@@ -1,0 +1,21 @@
+  .list-group-item a {
+    color: #555; /* 使用稍深的灰色 */
+    font-size: 11px;
+    text-decoration: none; /* 去除下划线 */
+    transition: color 0.3s; /* 添加颜色变化的过渡效果 */
+}
+
+.list-group-item a:hover {
+    color: #777; /* 鼠标悬停时改变颜色 */
+}
+      #completeShow {
+    position: absolute;
+    top: 100%; /* 相对于父元素（搜索框）底部定位 */
+    left: 0;
+    z-index: 1;
+    background-color: #fff; /* 设置背景颜色 */
+    border: 1px solid #ccc; /* 添加边框 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+    max-height: 200px; /* 设置最大高度，超出部分出现滚动条 */
+    overflow-y: auto; /* 内容超出部分出现垂直滚动条 */
+}
